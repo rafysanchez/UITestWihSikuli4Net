@@ -82,8 +82,8 @@ namespace UITestWihSikuli4Net
             string titleCaption = _webDriver.FindElement( By.ClassName( "siteIdentity" ) ).Text;
 
             Assert.AreEqual( title , titleCaption );
-
-            var mainLinks = _webDriver.FindElements( By.CssSelector( "nav div div:nth-of-type(3) ul li a" ) ).Where( element => element.Displayed == true ).ToList();
+            // #menu > li:nth-child(1) > a
+            var mainLinks = _webDriver.FindElements( By.CssSelector( "nav ul li a" ) ).Where( element => element.Displayed == true ).ToList();
 
             Assert.AreEqual( mainLinksList.Count , mainLinks.Count );
 
@@ -115,25 +115,37 @@ namespace UITestWihSikuli4Net
         [TestMethod]
         public void TestFindOuchBySikuli()
         {
-            Screen mainPage = new Screen();
+            try
+            {
+                Screen mainPage = new Screen();
 
-            Pattern findMvpTextBox = new Pattern( Path.Combine( AppDomain.CurrentDomain.BaseDirectory + @"\Images\FindMvpTextBox.png" ) );
+                Pattern findMvpTextBox = new Pattern(Path.Combine(AppDomain.CurrentDomain.BaseDirectory + @"\Images\FindMvpTextBox.png"));
 
-            Pattern ouchProfileLink = new Pattern( Path.Combine( AppDomain.CurrentDomain.BaseDirectory + @"\Images\OuchProfileLink.png" ) );
+                Pattern ouchProfileLink = new Pattern(Path.Combine(AppDomain.CurrentDomain.BaseDirectory + @"\Images\OuchProfileLink.png"));
 
-            Pattern ouchProfileContent = new Pattern( Path.Combine( AppDomain.CurrentDomain.BaseDirectory + @"\Images\OuchProfileContent.png" ) );
+                Pattern ouchProfileContent = new Pattern(Path.Combine(AppDomain.CurrentDomain.BaseDirectory + @"\Images\OuchProfileContent.png"));
 
-            mainPage.Wait( findMvpTextBox );
+                mainPage.Wait(findMvpTextBox);
 
-            mainPage.Click( findMvpTextBox , true );
+                mainPage.Click(findMvpTextBox, true);
 
-            mainPage.Type( findMvpTextBox , "Ouch Liu" + Key.ENTER );
+                mainPage.Type(findMvpTextBox, "Ouch Liu" + Key.ENTER);
 
-            mainPage.Wait( ouchProfileLink );
+                mainPage.Wait(ouchProfileLink);
 
-            mainPage.Click( ouchProfileLink , true );
+                mainPage.Click(ouchProfileLink, true);
 
-            Assert.IsTrue( mainPage.Exists( ouchProfileContent ) );
+                Assert.IsTrue(mainPage.Exists(ouchProfileContent));
+            }
+            catch (Exception ex)
+            {
+
+                string erro = ex.Message;
+                Assert.IsTrue(1==2); ;
+            }
+
+
+         
         }
 
 

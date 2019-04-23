@@ -9,6 +9,7 @@ using OpenQA.Selenium.Chrome;
 using Sikuli4Net.sikuli_REST;
 using Sikuli4Net.sikuli_UTIL;
 using UITestWihSikuli4Net.Models;
+using System.Configuration;
 
 namespace UITestWihSikuli4Net
 {
@@ -24,17 +25,31 @@ namespace UITestWihSikuli4Net
         private const string LanguageCode = "en-us";
 
         [ClassInitialize]
-        public static void ClassInitialize( TestContext testContext )
+        public static void ClassInitialize(TestContext testContext)
         {
-            _launcher = new APILauncher( true );
+#pragma warning disable CS0618 // Type or member is obsolete
+            string id = ConfigurationSettings.AppSettings["id"];
+#pragma warning restore CS0618 // Type or member is obsolete
 
-            _webDriver = new ChromeDriver();
+            try
+            {
+                _launcher = new APILauncher(true);
+                _launcher.Start();
 
-            _launcher.Start();
+                _webDriver = new ChromeDriver();
 
-            _webDriver.Manage().Window.Maximize();
+                _webDriver.Manage().Window.Maximize();
 
-            _webDriver.Navigate().GoToUrl( $"{MvpUrl}/{LanguageCode}" );
+                _webDriver.Navigate().GoToUrl($"{MvpUrl}/{LanguageCode}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                throw;
+            }
+
+
 
         }
 
@@ -79,23 +94,23 @@ namespace UITestWihSikuli4Net
                 },
             };
 
-            string titleCaption = _webDriver.FindElement( By.ClassName( "siteIdentity" ) ).Text;
+            string titleCaption = _webDriver.FindElement(By.ClassName("siteIdentity")).Text;
 
-            Assert.AreEqual( title , titleCaption );
+            Assert.AreEqual(title, titleCaption);
             // #menu > li:nth-child(1) > a
-            var mainLinks = _webDriver.FindElements( By.CssSelector( "nav ul li a" ) ).Where( element => element.Displayed == true ).ToList();
+            var mainLinks = _webDriver.FindElements(By.CssSelector("nav ul li a")).Where(element => element.Displayed == true).ToList();
 
-            Assert.AreEqual( mainLinksList.Count , mainLinks.Count );
+            Assert.AreEqual(mainLinksList.Count, mainLinks.Count);
 
-            for( int i = 0 ; i < mainLinksList.Count ; i++ )
+            for (int i = 0; i < mainLinksList.Count; i++)
             {
-                Assert.AreEqual( mainLinksList.ElementAt( i ).Caption , mainLinks[ i ].Text );
+                Assert.AreEqual(mainLinksList.ElementAt(i).Caption, mainLinks[i].Text);
 
-                Assert.AreEqual( mainLinksList.ElementAt( i ).Url , mainLinks[ i ].GetAttribute( "href" ) );
+                Assert.AreEqual(mainLinksList.ElementAt(i).Url, mainLinks[i].GetAttribute("href"));
 
-                if( mainLinksList.ElementAt( i ).ChildLinks != null && mainLinksList.ElementAt( i ).ChildLinks.Count > 0 )
+                if (mainLinksList.ElementAt(i).ChildLinks != null && mainLinksList.ElementAt(i).ChildLinks.Count > 0)
                 {
-                    mainLinks[ i ].Click();
+                    mainLinks[i].Click();
                 }
             }
         }
@@ -105,11 +120,11 @@ namespace UITestWihSikuli4Net
         {
             var expected = "url(\"https://mvpprod.blob.core.windows.net/content/home/images/home1.jpg\")";
 
-            var heroLink = _webDriver.FindElement( By.CssSelector( "div.section1 a" ) );
+            var heroLink = _webDriver.FindElement(By.CssSelector("div.section1 a"));
 
-            var backgroundImageLink = heroLink.GetCssValue( "background-image" );
+            var backgroundImageLink = heroLink.GetCssValue("background-image");
 
-            Assert.AreEqual( expected , backgroundImageLink );
+            Assert.AreEqual(expected, backgroundImageLink);
         }
 
         [TestMethod]
@@ -141,11 +156,11 @@ namespace UITestWihSikuli4Net
             {
 
                 string erro = ex.Message;
-                Assert.IsTrue(1==2); ;
+                Assert.IsTrue(1 == 2); ;
             }
 
 
-         
+
         }
 
 
